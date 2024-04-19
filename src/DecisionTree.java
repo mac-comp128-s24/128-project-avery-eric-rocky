@@ -4,7 +4,7 @@
 public class DecisionTree {
     private DecisionNode root;
 
-    public DecisionTree(Database data) {
+    public DecisionTree(DataBase data) {
         if (root.isLeaf()) {
             DecisionNode.AnswerNode answerNode = (DecisionNode.AnswerNode) root;
         } else {
