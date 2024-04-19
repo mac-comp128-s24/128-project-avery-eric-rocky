@@ -1,7 +1,7 @@
+import edu.macalester.graphics.CanvasWindow;
 import edu.macalester.graphics.GraphicsText;
 import edu.macalester.graphics.Image;
 import edu.macalester.graphics.ui.Button;
-import edu.macalester.graphics.CanvasWindow;
 public class HomeScreen {
     
 
@@ -21,7 +21,7 @@ public class HomeScreen {
     }
 
     public static void addImage(CanvasWindow canvas){
-        Image image = new Image("Akinator.jpg");
+        Image image = new Image("images/Akinator.jpg");
         image.setMaxHeight(900);
         image.setMaxWidth(1600);
         canvas.add(image);

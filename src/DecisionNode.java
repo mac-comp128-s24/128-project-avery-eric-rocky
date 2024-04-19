@@ -6,7 +6,7 @@ public sealed interface DecisionNode {
     public final class AnswerNode implements DecisionNode {
 
         /**
-         * @retrun true if the DecisionNode is a leaf node else false.
+         * @return true if the DecisionNode is a leaf node else false.
          */
         private List<String> answers;
 
@@ -40,6 +40,7 @@ public sealed interface DecisionNode {
     public final class QuestionNode implements DecisionNode {
         private DecisionNode yes;
         private DecisionNode no;
+        private DecisionNode idk;
 
         @Override
         public boolean isLeaf() {
@@ -50,9 +51,10 @@ public sealed interface DecisionNode {
          * @param yes
          * @param no
          */
-        public QuestionNode(DecisionNode yes, DecisionNode no) {
+        public QuestionNode(DecisionNode yes, DecisionNode no, DecisionNode idk) {
             this.yes = yes;
             this.no = no;
+            this.idk = idk;
         }
 
         /**
@@ -82,6 +84,21 @@ public sealed interface DecisionNode {
         public void setNo(DecisionNode no) {
             this.no = no;
         }
+
+        /**
+         * @return the idk
+         */
+        public DecisionNode getIdk() {
+            return idk;
+        }
+
+        /**
+         * @param idk the idk to set
+         */
+        public void setIdk(DecisionNode idk) {
+            this.idk = idk;
+        }
+
 
     };
 }
