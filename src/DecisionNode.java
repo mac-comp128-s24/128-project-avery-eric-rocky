@@ -59,6 +59,7 @@ public sealed interface DecisionNode {
             this.idk = idk;
         }
 
+
         /**
          * @return the yes
          */
@@ -99,6 +100,13 @@ public sealed interface DecisionNode {
          */
         public void setIdk(DecisionNode idk) {
             this.idk = idk;
+        }
+
+        /**
+         * @return the question
+         */
+        public String getQuestion() {
+            return question;
         }
 
 
