@@ -41,6 +41,7 @@ public sealed interface DecisionNode {
         private DecisionNode yes;
         private DecisionNode no;
         private DecisionNode idk;
+        private String question;
 
         @Override
         public boolean isLeaf() {
@@ -51,7 +52,8 @@ public sealed interface DecisionNode {
          * @param yes
          * @param no
          */
-        public QuestionNode(DecisionNode yes, DecisionNode no, DecisionNode idk) {
+        public QuestionNode(String question, DecisionNode yes, DecisionNode no, DecisionNode idk) {
+            this.question = question;
             this.yes = yes;
             this.no = no;
             this.idk = idk;
