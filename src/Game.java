@@ -8,11 +8,13 @@ public class Game {
 
     private CanvasWindow canvas;
     private Color black = Color.BLACK;
+    HomeScreen HomeScreen = new HomeScreen();
 
     public Game() {
         canvas = new CanvasWindow("Title", 600, 800);
         canvas.setBackground(black);
         HomeScreen.addHomescreen(canvas);
+        HomeScreen.editRulesScreen(HomeScreen.rulesScreen);
         
         DecisionTree tree = new DecisionTree(null, this::entropyAlg);
     }
@@ -30,7 +32,7 @@ public class Game {
             int trueNum = question.trues.length();
             int falseNum = question.falses.length();
             int lowerVal = Math.min(trueNum, falseNum);
-            currentEntropy = currentEntropy + ((lowerVal / (trueNum + falseNum)) * 100);
+        currentEntropy = currentEntropy + ((lowerVal / (trueNum + falseNum)) * 100);
             if (currentEntropy > greatestEntropy){
                 bestQuestion = question;
             }
