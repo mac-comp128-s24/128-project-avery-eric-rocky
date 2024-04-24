@@ -5,7 +5,7 @@ public class DecisionTree {
     private DecisionNode root;
     private SplittingFunction splittingFunction;
 
-    public DecisionTree(Database data, SplittingFunction splittingFunction) {
+    public DecisionTree(DatabaseView data, SplittingFunction splittingFunction) {
         this.splittingFunction = splittingFunction;
         root = internalRecursive(data);
         // if (root.isLeaf()) {
@@ -16,7 +16,7 @@ public class DecisionTree {
 
     }
 
-    private DecisionNode internalRecursive(Database data) {
+    private DecisionNode internalRecursive(DatabaseView data) {
         DecisionNode node;
         if (shouldStop(data)) {
             node = new DecisionNode.AnswerNode(null);// TODO
@@ -26,7 +26,7 @@ public class DecisionTree {
         return node;
     }
 
-    private DecisionNode split(Database data) {
+    private DecisionNode split(DatabaseView data) {
         String splittingQuestion = splittingFunction.choose(data);
         data = data.removeQuestion(splittingQuestion);
         DecisionNode yes = internalRecursive(data.filterAnswers(splittingQuestion, true));
@@ -36,12 +36,12 @@ public class DecisionTree {
         return node;
     }
 
-    private boolean shouldStop(Database data) {
+    private boolean shouldStop(DatabaseView data) {
         return false; // TODO!!
     }
 
     public interface SplittingFunction {
-        public String choose(Database data);
+        public String choose(DatabaseView data);
     }
 
 

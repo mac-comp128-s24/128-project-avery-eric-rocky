@@ -1,6 +1,4 @@
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 import edu.macalester.graphics.CanvasWindow;
 
@@ -19,7 +17,7 @@ public class Game {
         DecisionTree tree = new DecisionTree(null, this::entropyAlg);
     }
 
-    private String entropyAlg(Database data) {
+    private String entropyAlg(DatabaseView data) {
         return "hi";
     }
 
