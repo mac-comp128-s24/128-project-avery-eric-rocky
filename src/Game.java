@@ -1,6 +1,4 @@
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 import edu.macalester.graphics.CanvasWindow;
 
@@ -21,7 +19,7 @@ public class Game {
         return "hi";
     }
 
-    private String simpleEntropy(Database data) {
+    private String simpleEntropy(Databased data) {
         int greatestEntropy = 0;
         Question bestQuestion;
         for(Question question: data.getQuestions()){
