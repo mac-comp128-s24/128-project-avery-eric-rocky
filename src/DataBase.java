@@ -1,16 +1,28 @@
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
- * @author Rocky Slaymaker on Apr 15, 2024
+ * @author Rocky Slaymaker on Apr 24, 2024
  */
 public class Database {
+    private List<Map<Integer, Boolean>> database;
+    private List<String> questions;
+    private List<String> objects;
 
-    public Database removeQuestion(String splittingQuestion) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeQuestion'");
+
+    public void addData(String object, String question, boolean truthValue) {
+        int questionID = questions.indexOf(question);
+        if (questionID == -1) {
+            questionID = questions.size();
+            questions.add(question);
+            database.add(new HashMap<>());
+        }
+        int objectID = objects.indexOf(object);
+        if (objectID == -1) {
+            objectID = objects.size();
+            objects.add(object);
+        }
+        database.get(questionID).put(objectID, truthValue);
     }
-
-    public Database filterAnswers(String splittingQuestion, boolean b) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'filterAnswers'");
-    }
-
 }
