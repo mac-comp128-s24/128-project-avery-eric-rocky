@@ -19,7 +19,7 @@ public class Game {
         return "hi";
     }
 
-    private String simpleEntropy(Databased data) {
+    private String simpleEntropy(Database data) {
         int greatestEntropy = 0;
         Question bestQuestion;
         for(Question question: data.getQuestions()){

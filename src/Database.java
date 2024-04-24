@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -6,10 +7,16 @@ import java.util.stream.Collectors;
 /**
  * @author Rocky Slaymaker on Apr 24, 2024
  */
-public class Databased {
+public class Database {
     private List<Map<Integer, Boolean>> database;
     private List<String> questions;
     private List<String> objects;
+
+    public Database() {
+        database = new ArrayList<>();
+        questions = new ArrayList<>();
+        objects = new ArrayList<>();
+    }
 
 
     public void addData(String object, String question, boolean truthValue) {
@@ -29,7 +36,8 @@ public class Databased {
 
     public List<String> getQuestionsObjects(String question) {
         int questionID = questions.indexOf(question);
-        return database.get(questionID).keySet().stream().map((Integer i) -> objects.get(i))
+        return database.get(questionID).keySet().stream()
+            .map((Integer i) -> objects.get(i) + database.get(questionID).get(i))
             .collect(Collectors.toList());
     }
 }

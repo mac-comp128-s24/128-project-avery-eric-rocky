@@ -25,6 +25,20 @@ public class JSONReader {
         }
     }
 
+    public static void readToDatabase(Database database) {
+        try {
+            Scanner scn = new Scanner(
+                new File(JSONReader.class.getResource("/data/twentyquestions-all.jsonl").getPath()));
+            scn.useDelimiter("\n").tokens().map((String s) -> new JSONObject(s))
+                .forEach((JSONObject o) -> {
+                    database.addData(o.getString("subject"), o.getString("question"), o.getBoolean("majority"));
+                });
+            scn.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static String trim(String s) {
         s = s.toLowerCase().trim();
         if (s.charAt(s.length() - 1) != '?') {
@@ -48,6 +62,8 @@ public class JSONReader {
     }
 
     public static void main(String[] args) {
-        read();
+        Database database = new Database();
+        readToDatabase(database);
+        System.out.println(database.getQuestionsObjects("is it big?"));
     }
 }

@@ -4,11 +4,11 @@ import java.util.Set;
  * @author Rocky Slaymaker on Apr 15, 2024
  */
 public class DatabaseView {
-    private Databased database;
+    private Database database;
     private Set<Integer> questions;
     private Set<Integer> objects;
 
-    public DatabaseView(Databased database) {
+    public DatabaseView(Database database) {
         this.database = database;
 
     }
