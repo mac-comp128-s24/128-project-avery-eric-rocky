@@ -105,8 +105,11 @@ public class Database implements Serializable {
             i++;
         }
         Comparator.naturalOrder();
-        return map.entrySet().stream().sorted(Entry.comparingByValue(Comparator.reverseOrder())).map((e) -> e.getKey())
-            .limit(limit).collect(Collectors.toSet());
+        return map.entrySet().stream()
+            .sorted(Entry.comparingByValue(Comparator.reverseOrder()))
+            .limit(limit)
+            .map((e) -> e.getKey())
+            .collect(Collectors.toSet());
     }
 
     public List<Entry<String, Integer>> getNBestQuestions2(int limit) {
@@ -138,6 +141,23 @@ public class Database implements Serializable {
      */
     public List<Map<Integer, Boolean>> getTable() {
         return table;
+    }
+
+    public Set<Integer> getNBestObjects(int limit) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < objects.size(); i++) {
+            int num = 0;
+            for (Map<Integer, Boolean> qs : table) {
+                if (qs.containsKey(i)) {
+                    num++;
+                }
+            }
+            map.put(i, num);
+        }
+        Comparator.naturalOrder();
+        return map.entrySet().stream().sorted(Entry.comparingByValue(Comparator.reverseOrder())).limit(limit)
+            .map((e) -> e.getKey())
+            .collect(Collectors.toSet());
     }
 
 }

@@ -10,23 +10,28 @@ import edu.macalester.graphics.GraphicsText;
  * @author Rocky Slaymaker on Apr 24, 2024
  */
 public class DecisionTreeViewer extends GraphicsGroup {
-    private static final double NODE_HIGHT = 30;
-    private static final double NODE_WIDTH = 60;
-    private static final double PADDING = 5;
+    private static final double NODE_HIGHT = 20;
+    private static final double NODE_WIDTH = 80;
+    private static final double PADDING = 0;
 
     public DecisionTreeViewer(DecisionTree tree, CanvasWindow canvas, double x, double y) {
         // super(x, y);
         canvas.add(this);
         Node root = drawNode(tree.getRoot(), x, y);
-        add(root);
+        root.setHidden(false);
         System.out.println("done");
         canvas.onClick((e) -> {
             Node n = (Node) getElementAt(e.getPosition());
             if (n == null) {
                 return;
+            } else if (n.areChildrenHidden()) {
+                n.showChildren();
+            } else {
+                n.hideAllChildren();
             }
-            n.children.forEach(this::add);
+
         });
+        canvas.onDrag((e) -> this.moveBy(e.getDelta()));
     }
 
     private Node drawNode(DecisionNode node, double x, double y) {
@@ -49,12 +54,15 @@ public class DecisionTreeViewer extends GraphicsGroup {
     }
 
     private Node drawLeaf(DecisionNode.AnswerNode node, double x, double y) {
-        Node n = new Node(x, y, NODE_WIDTH, NODE_HIGHT, node.getAnswers().stream().limit(10).toList().toString(),
+        Node n = new Node(x, y, NODE_WIDTH, NODE_HIGHT, node.getAnswers().stream().limit(15).toList().toString(),
             new ArrayList<>(0));
         return n;
     }
 
     private class Node extends GraphicsText {
+        private boolean hidden = true;
+        private List<Node> children;
+
         public Node(double x, double y, double width, double height, String text, List<Node> children) {
             super(text, x, y);
             // GraphicsText graphicsText = new GraphicsText(text, x, y);
@@ -66,6 +74,35 @@ public class DecisionTreeViewer extends GraphicsGroup {
             this.children = children;
         }
 
-        private List<Node> children;
+        public boolean areChildrenHidden() {
+            return children.stream().anyMatch((c) -> c.isHidden());
+        }
+
+        private void setHidden(boolean b) {
+            if (!b && hidden) {
+                add(this);
+            } else if (b && !hidden) {
+                remove(this);
+            }
+            hidden = b;
+        }
+
+
+        private boolean isHidden() {
+            return hidden;
+        }
+
+        public void hideAllChildren() {
+            for (Node node : children) {
+                node.setHidden(true);
+                node.hideAllChildren();
+            }
+        }
+
+        public void showChildren() {
+            for (Node node : children) {
+                node.setHidden(false);
+            }
+        }
     }
 }

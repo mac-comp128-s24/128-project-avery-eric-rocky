@@ -3,7 +3,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -19,8 +18,7 @@ public class DatabaseView {
         // questions = new HashSet<>();
         // questions.addAll(IntStream.range(0,
         // database.getQuestions().size()).boxed().collect(Collectors.toSet()));
-        objects = new HashSet<>();
-        objects.addAll(IntStream.range(0, database.getObjectStrings().size()).boxed().collect(Collectors.toSet()));
+        objects = database.getNBestObjects(100);
 
         questions = database.getNBestQuestions(500);
     }

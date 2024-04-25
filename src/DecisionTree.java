@@ -21,7 +21,7 @@ public class DecisionTree {
 
     private DecisionNode internalRecursive(DatabaseView dataView, int depth) {
         DecisionNode node;
-        if (depth >= 10 || shouldStop(dataView)) {
+        if (depth >= 8 || shouldStop(dataView)) {
             node = new DecisionNode.AnswerNode(dataView.getObjectStrings());
         } else {
             node = split(dataView, depth);
