@@ -1,13 +1,16 @@
+import edu.macalester.graphics.CanvasWindow;
+
 /**
  * @author Rocky Slaymaker on Apr 15, 2024
  */
 public class DecisionTree {
     private DecisionNode root;
-    private SplittingFunction splittingFunction;
+    private SplittingCriterion splittingFunction;
 
-    public DecisionTree(DatabaseView data, SplittingFunction splittingFunction) {
+    public DecisionTree(Database database, SplittingCriterion splittingFunction) {
+        DatabaseView dataView = new DatabaseView(database);
         this.splittingFunction = splittingFunction;
-        root = internalRecursive(data);
+        root = internalRecursive(dataView, 0);
         // if (root.isLeaf()) {
         // DecisionNode.AnswerNode answerNode = (DecisionNode.AnswerNode) root;
         // } else {
@@ -16,33 +19,65 @@ public class DecisionTree {
 
     }
 
-    private DecisionNode internalRecursive(DatabaseView data) {
+    private DecisionNode internalRecursive(DatabaseView dataView, int depth) {
         DecisionNode node;
-        if (shouldStop(data)) {
-            node = new DecisionNode.AnswerNode(null);// TODO
+        if (depth >= 10 || shouldStop(dataView)) {
+            node = new DecisionNode.AnswerNode(dataView.getObjectStrings());
         } else {
-            node = split(data);
+            node = split(dataView, depth);
         }
         return node;
     }
 
-    private DecisionNode split(DatabaseView data) {
-        String splittingQuestion = splittingFunction.choose(data);
-        data = data.removeQuestion(splittingQuestion);
-        DecisionNode yes = internalRecursive(data.filterAnswers(splittingQuestion, true));
-        DecisionNode no = internalRecursive(data.filterAnswers(splittingQuestion, false));
-        DecisionNode idk = internalRecursive(data);
-        DecisionNode node = new DecisionNode.QuestionNode(splittingQuestion, yes, no, idk);
-        return node;
+    private DecisionNode split(DatabaseView dataView, int depth) {
+        int splittingQuestionID = splittingFunction.choose(dataView);
+        if (!dataView.getQuestionsIDs().contains(splittingQuestionID)) {
+            throw new Error();
+        }
+        dataView.removeQuestion(splittingQuestionID);
+        depth += 1;
+        DecisionNode yes = internalRecursive(dataView.filterAnswers(splittingQuestionID, true), depth);
+        DecisionNode no = internalRecursive(dataView.filterAnswers(splittingQuestionID, false), depth);
+        DecisionNode idk = internalRecursive(dataView, depth);
+        return new DecisionNode.QuestionNode(dataView.getQuestionByID(splittingQuestionID), yes, no, idk);
     }
 
-    private boolean shouldStop(DatabaseView data) {
-        return false; // TODO!!
+    private boolean shouldStop(DatabaseView dataView) {
+        return dataView.getQuestionsIDs().isEmpty() || dataView.indistinguishable();
     }
 
-    public interface SplittingFunction {
-        public String choose(DatabaseView data);
+    public interface SplittingCriterion {
+        public int choose(DatabaseView dataView);
     }
 
+    /**
+     * @return the root
+     */
+    public DecisionNode getRoot() {
+        return root;
+    }
 
+    public static void main(String[] args) {
+        Database database = new Database();
+        JSONReader.readToDatabase(database);
+        // database.writeToFile("yourfile.txt");
+        // Database database = readFromFile("yourfile.txt");
+        DecisionTree tree = new DecisionTree(database, (DatabaseView d) -> {
+            int maxID = -1;
+            int maxNum = -1;
+            for (int questionID : d.getQuestionsIDs()) {
+                int numTrue = (int) d.getAnswers(questionID).filter((e) -> e.getValue()).count();
+                int numFalse = (int) d.getAnswers(questionID).filter((e) -> !e.getValue()).count();
+                int num = Math.min(numFalse, numTrue);
+                if (num > maxNum) {
+                    maxNum = num;
+                    maxID = questionID;
+                }
+            }
+            return maxID;
+        });
+        System.out.println("Done");
+        CanvasWindow canvas = new CanvasWindow("null", 800, 800);
+        DecisionTreeViewer viewer = new DecisionTreeViewer(tree, canvas, 400, 10);
+    }
 }

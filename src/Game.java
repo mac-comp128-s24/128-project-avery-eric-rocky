@@ -17,26 +17,26 @@ public class Game {
         DecisionTree tree = new DecisionTree(null, this::entropyAlg);
     }
 
-    private String entropyAlg(DatabaseView data) {
-        return "hi";
+    private int entropyAlg(DatabaseView data) {
+        return 0;
     }
 
-    private String simpleEntropy(Database data) {
-        int greatestEntropy = 0;
-        Question bestQuestion;
-        for(Question question: data.getQuestions()){
-            int currentEntropy = 0;
-            currentEntropy = question.answers.length() * 10;
-            int trueNum = question.trues.length();
-            int falseNum = question.falses.length();
-            int lowerVal = Math.min(trueNum, falseNum);
-        currentEntropy = currentEntropy + ((lowerVal / (trueNum + falseNum)) * 100);
-            if (currentEntropy > greatestEntropy){
-                bestQuestion = question;
-            }
-        }
-        return bestQuestion.toString();
-    }
+    // private String simpleEntropy(DatabaseView data) {
+    // int greatestEntropy = 0;
+    // String bestQuestion;
+    // for (String question : data.getQuestions()) {
+    // int currentEntropy = 0;
+    // currentEntropy = question.answers.length() * 10;
+    // int trueNum = question.trues.length();
+    // int falseNum = question.falses.length();
+    // int lowerVal = Math.min(trueNum, falseNum);
+    // currentEntropy = currentEntropy + ((lowerVal / (trueNum + falseNum)) * 100);
+    // if (currentEntropy > greatestEntropy){
+    // bestQuestion = question;
+    // }
+    // }
+    // return bestQuestion.toString();
+    // }
 
 
     public static void main(String[] args) {
