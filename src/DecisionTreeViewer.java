@@ -54,24 +54,31 @@ public class DecisionTreeViewer extends GraphicsGroup {
     }
 
     private Node drawLeaf(DecisionNode.AnswerNode node, double x, double y) {
-        Node n = new Node(x, y, NODE_WIDTH, NODE_HIGHT, node.getAnswers().stream().limit(15).toList().toString(),
+        Node n = new Node(x, y, NODE_WIDTH, NODE_HIGHT, node.getAnswers().stream().limit(30).toList().toString(),
             new ArrayList<>(0));
         return n;
     }
 
     private class Node extends GraphicsText {
         private boolean hidden = true;
+        private String text;
+        private double x, y;
         private List<Node> children;
 
         public Node(double x, double y, double width, double height, String text, List<Node> children) {
-            super(text, x, y);
-            // GraphicsText graphicsText = new GraphicsText(text, x, y);
+            this.text = text;
+            this.x = x;
+            this.y = y;
+            this.children = children;
+        }
+
+        private void draw() {
+            setText(text);
             setFontStyle(FontStyle.BOLD);
             setFontSize(10);
             setWrappingWidth(NODE_WIDTH);
             setCenter(x, y);
             setY(y);
-            this.children = children;
         }
 
         public boolean areChildrenHidden() {
@@ -81,6 +88,7 @@ public class DecisionTreeViewer extends GraphicsGroup {
         private void setHidden(boolean b) {
             if (!b && hidden) {
                 add(this);
+                draw();
             } else if (b && !hidden) {
                 remove(this);
             }
