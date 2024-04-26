@@ -22,7 +22,7 @@ public class DatabaseView {
         // questions.addAll(IntStream.range(0,
         // database.getQuestions().size()).boxed().collect(Collectors.toSet()));
         objects = database.getNBestObjects(100);
-        questions = database.getNBestQuestions(500);
+        questions = database.getNBestQuestions(200);
     }
 
     public DatabaseView(DatabaseView view) {
@@ -54,24 +54,32 @@ public class DatabaseView {
         return objects;
     }
 
-    public Set<Integer> getQuestionsIDs() {
+    public Set<Integer> getQuestionIDs() {
         return questions;
     }
 
 
+
     public boolean indistinguishable() {
-        for (Integer questionID : questions) {
-            Boolean truthValue = null;
-            for (Integer objectID : objects) {
-                if (truthValue == null) {
-                    truthValue = database.getTruthValue(objectID, questionID);
-                } else if (database.getTruthValue(objectID, questionID) != null
-                    && !truthValue.equals(database.getTruthValue(objectID, questionID))) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        return getQuestionIDs().parallelStream().unordered()
+            .map((questionID) -> database.getTable().get(questionID).entrySet().parallelStream().unordered()
+                .filter((e) -> objects.contains(e.getKey())).map((e) -> e.getValue()).distinct().count() <= 1)
+            .allMatch((b) -> b);
+    }
+
+    public int testSplit2() {
+        return getQuestionIDs().parallelStream()
+            .map((questionID) -> new Tuple<>(questionID,
+                database.getTable().get(questionID).entrySet().parallelStream().unordered()
+                    .filter((e) -> objects.contains(e.getKey())).collect(Collectors.toSet())))
+            .map((t) -> {
+                int all = t.b.size();
+                t.b.removeIf((e) -> e.getValue());
+                double y = Math.log(t.b.size());
+                double n = Math.log(all - t.b.size());
+                return new Tuple<>(t.a, y + n);
+            }).sorted(Tuple.sortByB(Comparator.reverseOrder())).findFirst().get().a;
+
     }
 
     public String getQuestionByID(int questionID) {
@@ -85,23 +93,19 @@ public class DatabaseView {
 
     public List<String> getObjectStringsByRelevance() {
         HashMap<Integer, Integer> map = new HashMap<>();
-        var a = getAskedQuestions();
-        for (Integer o : objects) {
-            int num = 0;
-            for (Integer q : a) {
-                if (database.getTable().get(q).containsKey(o)) {
-                    num++;
-                }
-            }
-            map.put(o, num);
-        }
-        return map.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+        getAskedQuestions().parallelStream().forEach((questionID) -> {
+            database.getTable().get(questionID)
+                .forEach((k, v) -> { map.put(k, map.getOrDefault(k, 0) + 1); });
+        });
+
+        return map.entrySet().parallelStream().filter((e) -> objects.contains(e.getKey()))
+            .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
             .map((e) -> database.getObjectByID(e.getKey()))
             .collect(Collectors.toList());
     }
 
     public Stream<Map.Entry<Integer, Boolean>> getAnswers(int questionID) {
-        return database.getTable().get(questionID).entrySet().stream()
+        return database.getTable().get(questionID).entrySet().parallelStream()
             .filter((e) -> getObjectIDs().contains(e.getKey()));
     }
 

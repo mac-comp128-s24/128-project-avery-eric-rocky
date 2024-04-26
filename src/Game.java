@@ -13,12 +13,7 @@ public class Game {
         canvas.setBackground(black);
         HomeScreen.addHomescreen(canvas);
         HomeScreen.editRulesScreen(HomeScreen.rulesScreen);
-        
-        DecisionTree tree = new DecisionTree(null, this::entropyAlg);
-    }
 
-    private int entropyAlg(DatabaseView data) {
-        return 0;
     }
 
     // private String simpleEntropy(DatabaseView data) {

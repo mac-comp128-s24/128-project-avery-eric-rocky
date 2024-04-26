@@ -99,13 +99,13 @@ public class Database implements Serializable {
         HashMap<Integer, Integer> map = new HashMap<>();
         int i = 0;
         for (Map<Integer, Boolean> qs : table) {
-            int numTrue = (int) qs.values().stream().filter((b) -> b).count();
+            int numTrue = (int) qs.values().parallelStream().filter((b) -> b).count();
             int numFalse = qs.size() - numTrue;
             map.put(i, Math.min(numFalse, numTrue));
             i++;
         }
         Comparator.naturalOrder();
-        return map.entrySet().stream()
+        return map.entrySet().parallelStream()
             .sorted(Entry.comparingByValue(Comparator.reverseOrder()))
             .limit(limit)
             .map((e) -> e.getKey())
@@ -155,7 +155,7 @@ public class Database implements Serializable {
             map.put(i, num);
         }
         Comparator.naturalOrder();
-        return map.entrySet().stream().sorted(Entry.comparingByValue(Comparator.reverseOrder())).limit(limit)
+        return map.entrySet().parallelStream().sorted(Entry.comparingByValue(Comparator.reverseOrder())).limit(limit)
             .map((e) -> e.getKey())
             .collect(Collectors.toSet());
     }
