@@ -11,18 +11,12 @@ public class DecisionTree {
         DatabaseView dataView = new DatabaseView(database);
         this.splittingFunction = splittingFunction;
         root = internalRecursive(dataView, 0);
-        // if (root.isLeaf()) {
-        // DecisionNode.AnswerNode answerNode = (DecisionNode.AnswerNode) root;
-        // } else {
-        // DecisionNode.QuestionNode questionNode = (DecisionNode.QuestionNode) root;
-        // }
-
     }
 
     private DecisionNode internalRecursive(DatabaseView dataView, int depth) {
         DecisionNode node;
         if (depth >= 8 || shouldStop(dataView)) {
-            node = new DecisionNode.AnswerNode(dataView.getObjectStrings());
+            node = new DecisionNode.AnswerNode(dataView.getObjectStringsByRelevance());
         } else {
             node = split(dataView, depth);
         }
