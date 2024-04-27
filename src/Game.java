@@ -1,4 +1,7 @@
 import java.awt.Color;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import edu.macalester.graphics.CanvasWindow;
 
@@ -6,36 +9,28 @@ public class Game {
 
     private CanvasWindow canvas;
     private Color black = Color.BLACK;
-    HomeScreen HomeScreen = new HomeScreen();
+    private HomeScreen homeScreen = new HomeScreen();
+    private static Future<DecisionTree> tree;
 
     public Game() {
+        tree = Executors.newSingleThreadExecutor().submit(() -> utils.readFromFile("res/caches/tree.txt"));
         canvas = new CanvasWindow("Title", 600, 800);
         canvas.setBackground(black);
-        HomeScreen.addHomescreen(canvas);
-        HomeScreen.editRulesScreen(HomeScreen.rulesScreen);
+        homeScreen.addHomescreen(canvas);
+        homeScreen.editRulesScreen(homeScreen.rulesScreen);
 
     }
-
-    // private String simpleEntropy(DatabaseView data) {
-    // int greatestEntropy = 0;
-    // String bestQuestion;
-    // for (String question : data.getQuestions()) {
-    // int currentEntropy = 0;
-    // currentEntropy = question.answers.length() * 10;
-    // int trueNum = question.trues.length();
-    // int falseNum = question.falses.length();
-    // int lowerVal = Math.min(trueNum, falseNum);
-    // currentEntropy = currentEntropy + ((lowerVal / (trueNum + falseNum)) * 100);
-    // if (currentEntropy > greatestEntropy){
-    // bestQuestion = question;
-    // }
-    // }
-    // return bestQuestion.toString();
-    // }
-
-
     public static void main(String[] args) {
         new Game();
+    }
+
+    public static DecisionTree getTree() {
+        try {
+            return tree.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }

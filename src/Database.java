@@ -95,11 +95,12 @@ public class Database implements Serializable {
     }
 
 
-    public Set<Integer> getNBestQuestions(int limit) {
+    public Set<Integer> getNBestQuestions(int limit, Set<Integer> bestObjects) {
         HashMap<Integer, Integer> map = new HashMap<>();
         int i = 0;
         for (Map<Integer, Boolean> qs : table) {
-            int numTrue = (int) qs.values().parallelStream().filter((b) -> b).count();
+            int numTrue = (int) qs.entrySet().parallelStream().filter((e) -> bestObjects.contains(e.getKey()))
+                .filter((e) -> e.getValue()).count();
             int numFalse = qs.size() - numTrue;
             map.put(i, Math.min(numFalse, numTrue));
             i++;

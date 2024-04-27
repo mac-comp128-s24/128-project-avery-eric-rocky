@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.List;
 
-public sealed interface DecisionNode {
+public sealed interface DecisionNode extends Serializable {
     public boolean isLeaf();
 
     public final class AnswerNode implements DecisionNode {

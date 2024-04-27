@@ -129,4 +129,10 @@ public class DecisionTreeViewer extends GraphicsGroup {
             }
         }
     }
+
+    public static void main(String[] args) {
+        DecisionTree tree = utils.readFromFile("res/caches/tree.txt");
+        CanvasWindow canvas = new CanvasWindow("null", 800, 800);
+        DecisionTreeViewer viewer = new DecisionTreeViewer(tree, canvas, 400, 10);
+    }
 }

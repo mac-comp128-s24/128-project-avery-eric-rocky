@@ -37,6 +37,23 @@ public class HomeScreen {
         
     }
 
+    public void addStartButton2(CanvasWindow canvas) {
+        Button startButton = new Button("Tree Viewer");
+        startButton.setPosition(250, 430);
+        startButton.setScale(5, 5);
+        canvas.add(startButton);
+        startButton.onClick(() -> {
+            startScreen = new CanvasWindow("TreeViewer", 800, 800);
+            GraphicsText loadingText = new GraphicsText("Loading...", 400, 400);
+            startScreen.add(loadingText);
+            startScreen.draw();
+            DecisionTreeViewer viewer = new DecisionTreeViewer(Game.getTree(), startScreen, 400, 10);
+            startScreen.remove(loadingText);
+        });
+        startButton.onClick(() -> {
+            // canvas.closeWindow();
+        });
+    }
 
 
     public void editScreen(CanvasWindow canvas){
@@ -70,7 +87,7 @@ public class HomeScreen {
 
     public void addRulesButton(CanvasWindow canvas){
         Button rulesButton = new Button("How to Play");
-        rulesButton.setPosition(245, 370);
+        rulesButton.setPosition(250, 370);
         rulesButton.setScale(5, 5);
         canvas.add(rulesButton);
         rulesButton.onClick(() -> {rulesScreen = new CanvasWindow("Rules", 600, 800); editRulesScreen(rulesScreen);;
@@ -105,6 +122,7 @@ public class HomeScreen {
         addTitle(canvas);
         addRulesButton(canvas);
         addStartButton(canvas);
+        addStartButton2(canvas);
 
     }
 
