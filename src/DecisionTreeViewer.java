@@ -68,7 +68,7 @@ public class DecisionTreeViewer extends GraphicsGroup {
 
             rect = new Rectangle(-gText.getWidth() / 2, 0, gText.getWidth() + PADDING * 2,
                 gText.getHeight() + PADDING * 2);
-            rect.setFillColor(Color.CYAN);
+            rect.setFillColor(Color.YELLOW);
 
             yesBox = new Rectangle(rect.getX(), rect.getY() + rect.getHeight(), rect.getWidth() / 2, 10);
             yesBox.setFillColor(Color.GREEN);
