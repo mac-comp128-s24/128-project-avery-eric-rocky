@@ -17,8 +17,6 @@ public class Game {
         canvas = new CanvasWindow("Title", 600, 800);
         canvas.setBackground(black);
         homeScreen.addHomescreen(canvas);
-        homeScreen.editRulesScreen(homeScreen.rulesScreen);
-
     }
     public static void main(String[] args) {
         new Game();
