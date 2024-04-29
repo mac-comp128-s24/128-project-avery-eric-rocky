@@ -10,15 +10,15 @@ import java.util.stream.IntStream;
  * @author Rocky Slaymaker on Apr 15, 2024
  */
 public class DatabaseView {
+    // Reference to a Database
     private Database database;
+    // The set of questionIDs left
     private Set<Integer> questions;
+    // The set of objectIDs left
     private Set<Integer> objects;
 
     public DatabaseView(Database database) {
         this.database = database;
-        // questions = new HashSet<>();
-        // questions.addAll(IntStream.range(0,
-        // database.getQuestions().size()).boxed().collect(Collectors.toSet()));
         objects = database.getNBestObjects(1000);
         questions = database.getNBestQuestions(1000, objects);
     }
@@ -55,8 +55,6 @@ public class DatabaseView {
     public Set<Integer> getQuestionIDs() {
         return questions;
     }
-
-
 
     public boolean indistinguishable() {
         return getQuestionIDs().parallelStream().unordered()

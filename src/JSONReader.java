@@ -61,7 +61,6 @@ public class JSONReader {
             Scanner scn = new Scanner(
                 new File(JSONReader.class.getResource("/data/twentyquestions-all.jsonl").getPath()));
             scn.useDelimiter("\n").tokens()
-                // .limit(200)
                 .map((String s) -> new JSONObject(s))
                 .forEach((JSONObject o) -> {
                     database.addData(o.getString("subject"), formatQuestion(o.getString("question")),

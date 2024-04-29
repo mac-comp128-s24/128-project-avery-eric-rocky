@@ -1,7 +1,3 @@
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -16,8 +12,14 @@ import java.util.stream.Collectors;
  * @author Rocky Slaymaker on Apr 24, 2024
  */
 public class Database implements Serializable {
+    // Essentially just a sparse matrix were the rows are questionIDs and the columns are objectIDs and
+    // the value is Boolean representing the answer to the question for that specific object. Most
+    // values are null because of incomplete data so we use a map indexed by objectID to avoid storing
+    // many null values.
     private List<Map<Integer, Boolean>> table;
+    // A list of unique questions where the index corresponds it that questions unique ID
     private List<String> questions;
+    // A list of unique objects where the index corresponds it that questions unique ID
     private List<String> objects;
 
     public Database() {
@@ -68,33 +70,6 @@ public class Database implements Serializable {
         return objects;
     }
 
-
-    public void writeToFile(String file) {
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream(file);
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(this);
-            objectOutputStream.flush();
-            objectOutputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static Database readFromFile(String file) {
-        try {
-            FileInputStream fileInputStream = new FileInputStream(file);
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            Database database = (Database) objectInputStream.readObject();
-            objectInputStream.close();
-            return database;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-
     public Set<Integer> getNBestQuestions(int limit, Set<Integer> bestObjects) {
         HashMap<Integer, Integer> map = new HashMap<>();
         int i = 0;
@@ -111,30 +86,6 @@ public class Database implements Serializable {
             .limit(limit)
             .map((e) -> e.getKey())
             .collect(Collectors.toSet());
-    }
-
-    public List<Entry<String, Integer>> getNBestQuestions2(int limit) {
-        HashMap<String, Integer> map = new HashMap<>();
-        int i = 0;
-        for (Map<Integer, Boolean> qs : table) {
-            int numTrue = (int) qs.values().stream().filter((b) -> b).count();
-            int numFalse = qs.size() - numTrue;
-            map.put(getQuestionByID(i), Math.min(numFalse, numTrue));
-            i++;
-        }
-        Comparator.naturalOrder();
-        return map.entrySet().stream().sorted(Entry.comparingByValue(Comparator.reverseOrder()))
-            .limit(limit).collect(Collectors.toList());
-    }
-
-    public static void main(String[] args) {
-        Database database = new Database();
-        JSONReader.readToDatabase(database);
-        var list = database.getNBestQuestions2(500);
-        for (Entry<String, Integer> entry : list) {
-            System.out.println(entry);
-        }
-        System.out.println("Number: " + list.size() + " of: " + database.table.size());
     }
 
     /**
