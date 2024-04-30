@@ -92,7 +92,7 @@ public class DecisionTree implements Serializable {
         Database database = new Database();
         JSONReader.readToDatabase(database);
         DecisionTree tree = new DecisionTree(database);
-        utils.writeToFile(tree, "res/caches/" + tree.toString());
+        utils.writeToFile(tree, "res/caches/" + tree.toString() + ":" + System.currentTimeMillis());
         CanvasWindow canvas = new CanvasWindow("null", 800, 800);
         DecisionTreeViewer viewer = new DecisionTreeViewer(tree, canvas, 400, 10);
     }

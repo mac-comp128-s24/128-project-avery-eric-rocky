@@ -72,8 +72,8 @@ public class DatabaseView {
 
     public List<String> getObjectStringsByRelevance() {
         Set<Integer> qs = getAskedQuestions();
-        return objects.parallelStream().map((Integer objectID) -> {
-            int num = (int) qs.parallelStream()
+        return objects.parallelStream().unordered().map((Integer objectID) -> {
+            int num = (int) qs.parallelStream().unordered()
                 .filter((Integer questionID) -> database.getTruthValue(objectID, questionID) != null).count();
             return new Tuple<>(objectID, num);
         })
