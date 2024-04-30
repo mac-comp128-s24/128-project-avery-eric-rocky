@@ -1,66 +1,98 @@
 import java.io.Serializable;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import edu.macalester.graphics.CanvasWindow;
 
 /**
- * @author Rocky Slaymaker on Apr 15, 2024
+ * Binary decision tree and ID3 generation algorithm
+ * 
+ * @author Avery, Eric, Rocky on Apr 15, 2024
  */
 public class DecisionTree implements Serializable {
     @SuppressWarnings("unused")
     private static final long serialversionUID = 1;
-    private DecisionNode root;
+    private transient static final int MAX_DEPTH = 15;
+    private transient static final int MAX_OBJECTS = 500;
+    private transient static final int MAX_QUESTIONS = 500;
 
-    public DecisionTree(Database database/* , SplittingCriterion splittingFunction */) {
-        DatabaseView dataView = new DatabaseView(database);
+    private DecisionTreeNode root;
+
+    public DecisionTree(Database database) {
+        DatabaseView dataView = new DatabaseView(database, MAX_OBJECTS, MAX_QUESTIONS);
         root = internalRecursive(dataView, 0);
     }
 
-    private DecisionNode internalRecursive(DatabaseView dataView, int depth) {
-        DecisionNode node;
-        if (depth >= 15 || shouldStop(dataView)) {
-            node = new DecisionNode.AnswerNode(dataView.getObjectStringsByRelevance());
-        } else {
-            node = split(dataView, depth);
+    private DecisionTreeNode internalRecursive(DatabaseView dataView, int depth) {
+        if (depth < MAX_DEPTH && !dataView.getQuestionIDs().isEmpty() && dataView.getObjectIDs().size() > 1) {
+            Optional<Integer> splittingQuestionID = testSplit2(dataView);
+            if (splittingQuestionID.isPresent()) {
+                return split(dataView, depth, splittingQuestionID.get());
+            }
         }
-        return node;
+        return new DecisionTreeNode.AnswerNode(dataView.getObjectStringsByRelevance());
     }
 
-    private DecisionNode split(DatabaseView dataView, int depth) {
-        int splittingQuestionID = dataView.testSplit2();
-        if (!dataView.getQuestionIDs().contains(splittingQuestionID)) {
-            throw new Error();
-        }
+    private DecisionTreeNode split(DatabaseView dataView, int depth, int splittingQuestionID) {
         dataView.removeQuestion(splittingQuestionID);
         depth += 1;
-        DecisionNode yes = internalRecursive(dataView.filterAnswers(splittingQuestionID, true), depth);
-        DecisionNode no = internalRecursive(dataView.filterAnswers(splittingQuestionID, false), depth);
+        DecisionTreeNode yes = internalRecursive(dataView.filterAnswers(splittingQuestionID, true), depth);
+        DecisionTreeNode no = internalRecursive(dataView.filterAnswers(splittingQuestionID, false), depth);
         // DecisionNode idk = internalRecursive(dataView, depth);
-        return new DecisionNode.QuestionNode(dataView.getQuestionByID(splittingQuestionID), yes, no, null);
-    }
-
-    private boolean shouldStop(DatabaseView dataView) {
-        return dataView.getQuestionIDs().isEmpty() || dataView.getObjectIDs().size() <= 1
-            || dataView.indistinguishable();
-    }
-
-    public interface SplittingCriterion {
-        public int choose(DatabaseView dataView);
+        return new DecisionTreeNode.QuestionNode(dataView.getQuestionByID(splittingQuestionID), yes, no);
     }
 
     /**
-     * @return the root
+     * @return whether or not there exists a question that can split the dataset
      */
-    public DecisionNode getRoot() {
+    public boolean indistinguishable(DatabaseView dataView) {
+        return dataView.getQuestionIDs().parallelStream().unordered()
+            .map((questionID) -> dataView.getAnswers(questionID)
+                .map((e) -> e.getValue())
+                .distinct().count() <= 1)
+            .allMatch((b) -> b);
+    }
+
+
+    public Optional<Integer> testSplit2(DatabaseView dataView) {
+        return dataView.getQuestionIDs().parallelStream()
+            .map((questionID) -> new Tuple<>(questionID, dataView.getAnswers(questionID).collect(Collectors.toSet())))
+            .filter(t -> !t.b.isEmpty())
+            .map((t) -> {
+                int all = t.b.size();
+                t.b.removeIf((e) -> e.getValue());
+                double y = t.b.size();
+                double n = all - t.b.size();
+                if (y + n == 0) {
+                    return null;
+                }
+                return new Tuple<>(t.a, Math.log(y * n));
+            })
+            .filter((t) -> t != null)
+            .max(Tuple.sortByB()).map((t) -> t.a);
+
+    }
+
+    /**
+     * @return the root node
+     */
+    public DecisionTreeNode getRoot() {
         return root;
     }
 
+    @Override
+    public String toString() {
+        return "DecisionTree:" + MAX_DEPTH + ":" + MAX_OBJECTS + ":" + MAX_QUESTIONS;
+    }
+
+    /**
+     * This main function generates a new tree an serializes it to file
+     */
     public static void main(String[] args) {
         Database database = new Database();
         JSONReader.readToDatabase(database);
-        // // database.writeToFile("yourfile.txt");
-        // // Database database = readFromFile("yourfile.txt");
         DecisionTree tree = new DecisionTree(database);
-        utils.writeToFile(tree, "res/caches/tree.txt");
+        utils.writeToFile(tree, "res/caches/" + tree.toString());
         CanvasWindow canvas = new CanvasWindow("null", 800, 800);
         DecisionTreeViewer viewer = new DecisionTreeViewer(tree, canvas, 400, 10);
     }

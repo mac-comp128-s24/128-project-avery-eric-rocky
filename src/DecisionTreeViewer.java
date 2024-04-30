@@ -11,7 +11,9 @@ import edu.macalester.graphics.Rectangle;
 import edu.macalester.graphics.TextAlignment;
 
 /**
- * @author Rocky Slaymaker on Apr 24, 2024
+ * Interactive view of the decision tree
+ * 
+ * @author Avery, Eric, Rocky on Apr 24, 2024
  */
 public class DecisionTreeViewer extends GraphicsGroup {
     private static final double NODE_MAX_WIDTH = 70;
@@ -37,24 +39,24 @@ public class DecisionTreeViewer extends GraphicsGroup {
     }
 
     private class Node extends GraphicsGroup {
-        private DecisionNode node;
+        private DecisionTreeNode node;
         private double x, y;
         Node child;
         GraphicsText gText;
         Rectangle rect, yesBox, noBox;
 
-        public Node(DecisionNode node, double x, double y) {
+        public Node(DecisionTreeNode node, double x, double y) {
             super(x, y);
             this.node = node;
             this.x = x;
             this.y = y;
             String text;
             if (node.isLeaf()) {
-                DecisionNode.AnswerNode answerNodeNode = (DecisionNode.AnswerNode) node;
+                DecisionTreeNode.AnswerNode answerNodeNode = (DecisionTreeNode.AnswerNode) node;
                 text = answerNodeNode.getAnswers().subList(0, Math.min(answerNodeNode.getAnswers().size(), 10))
                     .toString();
             } else {
-                DecisionNode.QuestionNode questionNode = (DecisionNode.QuestionNode) node;
+                DecisionTreeNode.QuestionNode questionNode = (DecisionTreeNode.QuestionNode) node;
                 text = questionNode.getQuestion();
             }
 
@@ -114,7 +116,7 @@ public class DecisionTreeViewer extends GraphicsGroup {
         private void drawYes() {
             removeChild();
             if (!node.isLeaf()) {
-                DecisionNode.QuestionNode questionNode = (DecisionNode.QuestionNode) node;
+                DecisionTreeNode.QuestionNode questionNode = (DecisionTreeNode.QuestionNode) node;
                 child = new Node(questionNode.getYes(), x - (NODE_MAX_WIDTH / 2 + PADDING / 2),
                     y + (getHeight() + PADDING));
             }
@@ -123,7 +125,7 @@ public class DecisionTreeViewer extends GraphicsGroup {
         private void drawNo() {
             if (!node.isLeaf()) {
                 removeChild();
-                DecisionNode.QuestionNode questionNode = (DecisionNode.QuestionNode) node;
+                DecisionTreeNode.QuestionNode questionNode = (DecisionTreeNode.QuestionNode) node;
                 child = new Node(questionNode.getNo(), x + (NODE_MAX_WIDTH / 2 + PADDING / 2),
                     y + (getHeight() + PADDING));
             }

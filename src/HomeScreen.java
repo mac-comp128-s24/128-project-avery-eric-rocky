@@ -8,12 +8,16 @@ import edu.macalester.graphics.ui.Button;
 
 
 
-
+/**
+ * Helper class for drawing UI
+ * 
+ * @author Avery, Eric, Rocky on Apr 30, 2024
+ */
 public class HomeScreen {
     
 
 
-    private DecisionNode currentNode;
+    private DecisionTreeNode currentNode;
     public CanvasWindow rulesScreen;
     private CanvasWindow startScreen;
     private Color yellow = Color.YELLOW;
@@ -101,7 +105,7 @@ public class HomeScreen {
         speechBubble.setText(talk(currentNode));
         yes.onClick(() -> {
             if (!currentNode.isLeaf()) {
-                DecisionNode.QuestionNode questionNode = (DecisionNode.QuestionNode) currentNode;
+                DecisionTreeNode.QuestionNode questionNode = (DecisionTreeNode.QuestionNode) currentNode;
                 currentNode = questionNode.getYes();
                 speechBubble.setText(talk(currentNode));
                 speechBubble.setCenter(quote.getCenter());
@@ -114,7 +118,7 @@ public class HomeScreen {
         });
         no.onClick(() -> {
             if (!currentNode.isLeaf()) {
-                DecisionNode.QuestionNode questionNode = (DecisionNode.QuestionNode) currentNode;
+                DecisionTreeNode.QuestionNode questionNode = (DecisionTreeNode.QuestionNode) currentNode;
                 currentNode = questionNode.getNo();
                 speechBubble.setText(talk(currentNode));
                 speechBubble.setCenter(quote.getCenter());
@@ -129,15 +133,15 @@ public class HomeScreen {
         canvas.remove(loadingText);
     }
 
-    private String talk(DecisionNode node) {
+    private String talk(DecisionTreeNode node) {
         String text;
         if (node.isLeaf()) {
-            DecisionNode.AnswerNode answerNodeNode = (DecisionNode.AnswerNode) node;
+            DecisionTreeNode.AnswerNode answerNodeNode = (DecisionTreeNode.AnswerNode) node;
             text = "Is it any of these? "
                 + answerNodeNode.getAnswers().subList(0, Math.min(answerNodeNode.getAnswers().size(), 10))
                     .toString();
         } else {
-            DecisionNode.QuestionNode questionNode = (DecisionNode.QuestionNode) node;
+            DecisionTreeNode.QuestionNode questionNode = (DecisionTreeNode.QuestionNode) node;
             text = questionNode.getQuestion();
         }
         return text;

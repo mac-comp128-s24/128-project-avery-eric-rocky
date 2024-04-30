@@ -5,9 +5,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
- * @author Rocky Slaymaker on Apr 15, 2024
+ * A view in to a data base that allows for the filtering of questions and objects without having to
+ * duplicate the whole data base.
+ * 
+ * @author Avery, Eric, Rocky on Apr 15, 2024
  */
 public class DatabaseView {
     // Reference to a Database
@@ -17,14 +21,15 @@ public class DatabaseView {
     // The set of objectIDs left
     private Set<Integer> objects;
 
-    public DatabaseView(Database database) {
+    public DatabaseView(Database database, int maxObjects, int maxQuestions) {
         this.database = database;
-        objects = database.getNBestObjects(1000);
-        questions = database.getNBestQuestions(1000, objects);
+        objects = database.getNBestObjects(maxObjects);
+        questions = database.getNBestQuestions(maxQuestions, objects);
     }
 
     public DatabaseView(DatabaseView view) {
         this.database = view.database;
+        // removed for efficiency because is is always set immediately after copying.
         // this.objects = new HashSet<>(view.objects);
         this.questions = new HashSet<>(view.questions);
 
@@ -56,29 +61,6 @@ public class DatabaseView {
         return questions;
     }
 
-    public boolean indistinguishable() {
-        return getQuestionIDs().parallelStream().unordered()
-            .map((questionID) -> database.getTable().get(questionID).entrySet().parallelStream().unordered()
-                .filter((e) -> objects.contains(e.getKey()))
-                .map((e) -> e.getValue())
-                .distinct().count() <= 1)
-            .allMatch((b) -> b);
-    }
-
-    public int testSplit2() {
-        return getQuestionIDs().parallelStream()
-            .map((questionID) -> new Tuple<>(questionID, getAnswers(questionID)))
-            .filter(t -> !t.b.isEmpty())
-            .map((t) -> {
-                int all = t.b.size();
-                t.b.removeIf((e) -> e.getValue());
-                double y = Math.log(t.b.size());
-                double n = Math.log(all - t.b.size());
-                return new Tuple<>(t.a, y + n);
-            }).max(Tuple.sortByB()).get().a;
-
-    }
-
     public String getQuestionByID(int questionID) {
         return database.getQuestionByID(questionID);
     }
@@ -99,9 +81,9 @@ public class DatabaseView {
             .collect(Collectors.toList());
     }
 
-    public Set<Map.Entry<Integer, Boolean>> getAnswers(int questionID) {
+    public Stream<Map.Entry<Integer, Boolean>> getAnswers(int questionID) {
         return database.getTable().get(questionID).entrySet().parallelStream().unordered()
-            .filter((e) -> objects.contains(e.getKey())).collect(Collectors.toSet());
+            .filter((e) -> objects.contains(e.getKey()));
     }
 
 }

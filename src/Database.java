@@ -9,7 +9,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * @author Rocky Slaymaker on Apr 24, 2024
+ * Database containing a table that is essentially just a sparse matrix were the rows are
+ * questionIDs and the columns are objectIDs and the value is Boolean representing the answer to the
+ * question for that specific object
+ * 
+ * @author Avery, Eric, Rocky on Apr 24, 2024
  */
 public class Database implements Serializable {
     // Essentially just a sparse matrix were the rows are questionIDs and the columns are objectIDs and
