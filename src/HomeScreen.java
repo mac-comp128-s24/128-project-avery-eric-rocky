@@ -29,7 +29,10 @@ public class HomeScreen {
     
     }
 
-
+    /**
+     * creates the rules button that open the rules canvas
+     */
+    
     public void addStartButton(CanvasWindow canvas){
         Button startButton = new Button("Start Game");
         startButton.setPosition(250, 400);
@@ -42,6 +45,8 @@ public class HomeScreen {
 
     }
 
+
+    
     public void addStartButton2(CanvasWindow canvas) {
         Button startButton = new Button("Tree Viewer");
         startButton.setPosition(250, 430);
@@ -77,13 +82,11 @@ public class HomeScreen {
         addImage(canvas);
         Button yes = new Button("Yes");
         canvas.add(yes);
-        yes.setPosition(200, 700);
+        yes.setPosition(250, 700);
         Button no = new Button("No");
         canvas.add(no);
-        no.setPosition(270, 700);
-        Button idk = new Button("I don't know");
-        canvas.add(idk);
-        idk.setPosition(340, 700);
+        no.setPosition(320, 700);
+        
         Button back = new Button("Back to Home Screen");
         canvas.add(back);
         back.onClick(() -> {
