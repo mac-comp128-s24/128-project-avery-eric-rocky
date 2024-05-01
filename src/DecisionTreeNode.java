@@ -63,7 +63,6 @@ public sealed interface DecisionTreeNode extends Serializable {
             this.no = no;
         }
 
-
         /**
          * @return the yes child node
          */

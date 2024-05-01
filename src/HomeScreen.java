@@ -6,16 +6,12 @@ import edu.macalester.graphics.Image;
 import edu.macalester.graphics.TextAlignment;
 import edu.macalester.graphics.ui.Button;
 
-
-
 /**
  * Helper class for drawing UI
  * 
  * @author Avery, Eric, Rocky on Apr 30, 2024
  */
 public class HomeScreen {
-    
-
 
     private DecisionTreeNode currentNode;
     public CanvasWindow rulesScreen;
@@ -23,16 +19,13 @@ public class HomeScreen {
     private Color yellow = Color.YELLOW;
     private Color black = Color.BLACK;
     
+    public HomeScreen() {
 
-
-    public HomeScreen(){
-    
     }
 
     /**
-     * creates the rules button that open the rules canvas
+     * Creates the Start Game button that allows the user to play the game.
      */
-    
     public void addStartButton(CanvasWindow canvas){
         Button startButton = new Button("Start Game");
         startButton.setPosition(250, 400);
@@ -45,8 +38,9 @@ public class HomeScreen {
 
     }
 
-
-    
+    /**
+     * Creates the Tree Viewer button that allows the user to see the tree that is used when playing the game.
+     */
     public void addStartButton2(CanvasWindow canvas) {
         Button startButton = new Button("Tree Viewer");
         startButton.setPosition(250, 430);
@@ -65,7 +59,9 @@ public class HomeScreen {
         });
     }
 
-
+    /**
+     * Sets up the game screen and checks the user's response to questions.
+     */
     public void editScreen(CanvasWindow canvas) {
         canvas.setBackground(black);
         GraphicsText loadingText = new GraphicsText("Loading...", 300, 400);
@@ -136,6 +132,9 @@ public class HomeScreen {
         canvas.remove(loadingText);
     }
 
+    /**
+     * @return Akiantor's next question or final guesses.
+     */
     private String talk(DecisionTreeNode node) {
         String text;
         if (node.isLeaf()) {
@@ -150,6 +149,9 @@ public class HomeScreen {
         return text;
     }
 
+    /**
+     * Creates the rules button that open the rules canvas.
+     */
     public void addRulesButton(CanvasWindow canvas){
         Button rulesButton = new Button("How to Play");
         rulesButton.setPosition(250, 370);
@@ -160,7 +162,9 @@ public class HomeScreen {
     }
 
 
-
+    /**
+     * Creates the title of the game.
+     */
     public void addTitle(CanvasWindow canvas){
         GraphicsText title = new GraphicsText("Akinator Game");
         title.setFontSize(50);
@@ -169,6 +173,9 @@ public class HomeScreen {
         canvas.add(title);
     }
 
+    /**
+     * Creates the main image of Akinator.
+     */
     public void addImage(CanvasWindow canvas){
         Image image = new Image("images/Akinator.jpg");
         image.setMaxHeight(2500);
@@ -177,11 +184,9 @@ public class HomeScreen {
         canvas.add(image);
     }
 
-    
-
-
-
-
+    /**
+     * Adds the necessary components of the home screen.
+     */
     public void addHomescreen(CanvasWindow canvas){
         addImage(canvas);
         addTitle(canvas);
@@ -191,10 +196,12 @@ public class HomeScreen {
 
     }
 
-
+    /**
+     * Adds the different game rules to the screen.
+     */
     public void addRules(CanvasWindow canvas){
         canvas.setBackground(black);
-        GraphicsText rule1 = new GraphicsText("The player must think of a fictional or real character, object, or animal");
+        GraphicsText rule1 = new GraphicsText("The player must think of an object, or animal.");
         rule1.setFontSize(20);
         rule1.setFillColor(black);
         rule1.setPosition(90, 155);
@@ -206,19 +213,19 @@ public class HomeScreen {
         rule2.setPosition(90, 180);
         rule2.setFillColor(yellow);
         canvas.add(rule2);
-        GraphicsText rule3 = new GraphicsText("by a series of questions and will try to guess");
+        GraphicsText rule3 = new GraphicsText("with a series of questions and will try to guess");
         rule3.setFontSize(20);
         rule3.setFillColor(black);
         rule3.setPosition(90, 205);
         rule3.setFillColor(yellow);
         canvas.add(rule3);
-        GraphicsText rule4 = new GraphicsText("who/what the player is thinking");
+        GraphicsText rule4 = new GraphicsText("what the player is thinking of.");
         rule4.setFontSize(20);
         rule4.setFillColor(black);
         rule4.setPosition(90, 230);
         rule4.setFillColor(yellow);
         canvas.add(rule4);
-        GraphicsText rule5 = new GraphicsText("The player can answer \"Yes\", \"No\", \"Don't know\"");
+        GraphicsText rule5 = new GraphicsText("The player can answer \"Yes\" or \"No\".");
         rule5.setFontSize(20);
         rule5.setFillColor(black);
         rule5.setPosition(90, 255);
@@ -232,14 +239,9 @@ public class HomeScreen {
 
     }
 
-
-
     public void editRulesScreen(CanvasWindow canvas){
         addImage(canvas);
         addRules(canvas);
         
     }
-
-
-
 }

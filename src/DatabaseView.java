@@ -34,7 +34,9 @@ public class DatabaseView {
         this.questions = new HashSet<>(view.questions);
 
     }
-
+    /**
+     * Removes a question from the list of remainging questions.
+     */
     public void removeQuestion(int questionID) {
         questions.remove(questionID);
     }
@@ -53,18 +55,30 @@ public class DatabaseView {
         return newView;
     }
 
+    /**
+     * @return a set of IDs of the remaining objects.
+     */
     public Set<Integer> getObjectIDs() {
         return objects;
     }
 
+    /**
+     * @return a set of IDs of the remaining questions.
+     */
     public Set<Integer> getQuestionIDs() {
         return questions;
     }
 
+    /**
+     * @return the ID of a question.
+     */
     public String getQuestionByID(int questionID) {
         return database.getQuestionByID(questionID);
     }
 
+    /**
+     * @return the list of names of the ramining objects.
+     */
     public List<String> getObjectStrings() {
         return objects.stream().map((Integer objectID) -> database.getObjectByID(objectID))
             .collect(Collectors.toList());
