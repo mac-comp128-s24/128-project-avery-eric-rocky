@@ -6,5 +6,7 @@
         "bin": true,
         "build": true
     },
-    "java.configuration.updateBuildConfiguration": "automatic"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.dependency.packagePresentation": "flat",
+    "java.project.explorer.showNonJavaResources": true
 }
